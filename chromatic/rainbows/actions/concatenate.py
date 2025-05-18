@@ -42,7 +42,10 @@ def concatenate_in_time(self, other, maximum_fractional_difference=0.01):
 
     # loop through wavelengths
     for k in self.wavelike:
-        f = fractional_difference(self.wavelike[k], other.wavelike[k])
+        try:
+            f = fractional_difference(self.wavelike[k], other.wavelike[k])
+        except KeyError:
+            raise KeyError(f"wavelike['{k}'] must exist in both Rainbows")
         if np.any(f > maximum_fractional_difference):
             cheerfully_suggest(
                 f"""
@@ -54,11 +57,19 @@ def concatenate_in_time(self, other, maximum_fractional_difference=0.01):
 
     # loop through timelike quantities
     for k in self.timelike:
-        new.timelike[k] = np.hstack([self.timelike[k], other.timelike[k]])
+        try:
+            other_array = other.timelike[k]
+        except KeyError:
+            raise KeyError(f"timelike['{k}'] must exist in both Rainbows")
+        new.timelike[k] = np.hstack([self.timelike[k], other_array])
 
     # loop through fluxlike quantities
     for k in self.fluxlike:
-        new.fluxlike[k] = np.hstack([self.fluxlike[k], other.fluxlike[k]])
+        try:
+            other_array = other.fluxlike[k]
+        except KeyError:
+            raise KeyError(f"fluxlike['{k}'] must exist in both Rainbows")
+        new.fluxlike[k] = np.hstack([self.fluxlike[k], other_array])
 
     # append the history entry to the new Rainbow
     new._record_history_entry(h)
@@ -94,7 +105,10 @@ def concatenate_in_wavelength(self, other, maximum_fractional_difference=0.01):
 
     # loop through times
     for k in self.timelike:
-        f = fractional_difference(self.timelike[k], other.timelike[k])
+        try:
+            f = fractional_difference(self.timelike[k], other.timelike[k])
+        except KeyError:
+            raise KeyError(f"timelike['{k}'] must exist in both Rainbows")
         if np.any(f > maximum_fractional_difference):
             cheerfully_suggest(
                 f"""
@@ -106,11 +120,19 @@ def concatenate_in_wavelength(self, other, maximum_fractional_difference=0.01):
 
     # loop through wavelike quantities
     for k in self.wavelike:
-        new.wavelike[k] = np.hstack([self.wavelike[k], other.wavelike[k]])
+        try:
+            other_array = other.wavelike[k]
+        except KeyError:
+            raise KeyError(f"wavelike['{k}'] must exist in both Rainbows")
+        new.wavelike[k] = np.hstack([self.wavelike[k], other_array])
 
     # loop through fluxlike quantities
     for k in self.fluxlike:
-        new.fluxlike[k] = np.hstack([self.fluxlike[k], other.fluxlike[k]])
+        try:
+            other_array = other.fluxlike[k]
+        except KeyError:
+            raise KeyError(f"fluxlike['{k}'] must exist in both Rainbows")
+        new.fluxlike[k] = np.hstack([self.fluxlike[k], other_array])
 
     # append the history entry to the new Rainbow
     new._record_history_entry(h)
